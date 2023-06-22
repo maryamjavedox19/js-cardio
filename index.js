@@ -135,50 +135,147 @@ return str.replace(/\b[a-z]/gi, function(char) {
 // CHALLENGE 5: MAX CHARACTER
 // Return the character that is most common in a string
 // ex. maxCharacter('javascript') == 'a'
-function maxCharacter(str) {
-  const charMap = {};
-  let maxNum = 0;
-  let maxChar = '';
+function longestWord(sen) {
+  // Create filtered array
+  const wordArr = sen.toLowerCase().match(/[a-z0-9]+/g);
 
-  str.split('').forEach(function(char) {
-    if(charMap[char]) {          //if it already exist increment it
-      charMap[char]++;
-    } else {                     //if doesn'nt already exist make it equal to 1
-      charMap[char] = 1;
+  // Sort by length
+  const sorted = wordArr.sort((a, b) => b.length - a.length);          //descending order
+
+  // If multiple words, put into array
+  const longestWordArr = sorted.filter(
+    word => word.length === sorted[0].length
+  );
+
+  // Check if more than one array val
+  if (longestWordArr.length === 1) {
+    // Return the word
+    return longestWordArr[0];
+  } else {
+    return longestWordArr;
+  }
+}
+
+// /---------------------------------------------------------------------------------------------------------
+
+
+// CHALLENGE 2: ARRAY CHUNKING
+// Split an array into chunked arrays of a specific length
+// ex. chunkArray([1, 2, 3, 4, 5, 6, 7], 3) === [[1, 2, 3],[4, 5, 6],[7]]
+// ex. chunkArray([1, 2, 3, 4, 5, 6, 7], 2) === [[1, 2],[3, 4],[5, 6],[7]]
+
+function chunkArray(arr, len) {
+  // SOLUTION 1
+
+  // // Init chunked arr
+  // const chunkedArr = [];
+  // // Set index
+  // let i = 0;
+
+  // // Loop while index is less than the array length
+  // while (i < arr.length) {
+  //   // Slice out from the index to the index + the chunk length nd push on to the chunked array
+  //   chunkedArr.push(arr.slice(i, i + len));
+  //   // Increment by chunk length
+  //   i += len;
+  // }
+
+  // return chunkedArr;
+
+
+  // ////////////////////////////////////////////////////////////////////////////////////
+
+
+  // SOLUTION 2
+
+  // Init chunked arr
+  const chunkedArr = [];
+
+  // Loop through arr
+  arr.forEach(val => {
+    // Get last element
+    const last = chunkedArr[chunkedArr.length - 1];
+
+    // Check if last and if last length is equal to the chunk len
+    if (!last || last.length === len) {
+      chunkedArr.push([val]);
+    } else {
+      last.push(val);
     }
   });
 
-  for(let char in charMap) {     //to iterate object
-    if(charMap[char] > maxNum) {
-      maxNum = charMap[char];
-      maxChar = char;
-    }
-  }
+  return chunkedArr;
+}
 
-  return maxChar;
+// --------------------------------------------------------------------------------------------------------
+
+// CHALLENGE 3: FLATTEN ARRAY
+// Take an array of arrays and flatten to a single array
+// ex. [[1, 2], [3, 4], [5, 6], [7]] = [1, 2, 3, 4, 5, 6, 7]
+
+function flattenArray(arrays) {
+  // SOLUTION 1
+  // return arrays.reduce((a, b) => a.concat(b));         //a is accumulator which is initial value, b is current element being processed
+
+  // ///////////////////////////////////////////////////////////////////////
+
+  // SOLUTION 2
+  // return [].concat.apply([], arrays);
+
+  // /////////////////////////////////////////////////////////////////////////
+
+  // SOLUTION 3
+  return [].concat(...arrays);
 }
 
 
-// ------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------
 
-// CHALLENGE 6: FIZZBUZZ
-// Write a program that prints all the numbers from 1 to 100. For multiples of 3, instead of the number, print "Fizz", for multiples of 5 print "Buzz". For numbers which are multiples of both 3 and 5, print "FizzBuzz".
-function fizzBuzz() {
-  for(let i = 1; i <= 100; i++) {
-    if(i % 15 === 0) {
-      console.log('FizzBuzz');
-    } else if(i % 3 === 0) {
-      console.log('Fizz');
-    } else if(i % 5 === 0) {
-      console.log('Buzz');
+// CHALLENGE 4: ANAGRAM
+// Return true if anagram and false if not
+// ex. 'elbow' === 'below'
+// ex. 'Dormitory' === 'dirty room##'
+
+function isAnagram(str1, str2) {
+  return formatStr(str1) === formatStr(str2);
+}
+
+// Helper function
+function formatStr(str) {
+  return str
+    .replace(/[^\w]/g, '')     //anything thats not a word character replace it with an empty string. g is global here
+    .toLowerCase()
+    .split('')
+    .sort()
+    .join('');
+}
+
+// -----------------------------------------------------------------------------------------------------------------
+
+// CHALLENGE 5: LETTER CHANGES
+// Change every letter of the string to the one that follows it and capitalize the vowels
+// Z should turn to A
+// ex. 'hello there' === 'Ifmmp UIfsf'
+
+function letterChanges(str) {
+  let newStr = str.toLowerCase().replace(/[a-z]/gi, char => {    //i is case insensitive; doesn't matter either its capial or lowercase
+    if (char === 'z' || char === 'Z') {
+      return 'a';
     } else {
-      console.log(i);
+      return String.fromCharCode(char.charCodeAt() + 1);
     }
-  }
+  });
+
+  newStr = newStr.replace(/a|e|i|o|u/gi, vowel => vowel.toUpperCase());
+
+  return newStr;
 }
 
-// ------------------------------------Call Function---------------------------------------
-const output = fizzBuzz();
+
+// Call Function
+const output = letterChanges('hello');
+
 console.log(output);
+
 
 
